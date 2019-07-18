@@ -52,25 +52,36 @@ Process {
     }
   }
 
-  GetBuilds | ForEach-Object {
-    $target = $_
-
-    $dockerArgs = @("build")
-    $target.Tags | ForEach-Object { $dockerArgs += @("--tag", "${Repository}:${_}") }
-    $target.BuildArgs.GetEnumerator() | ForEach-Object {
-      $dockerArgs += @("--build-arg", "$($_.Key)=$($_.Value)")
-    }
-    $target.Labels.GetEnumerator() | ForEach-Object {
-      $dockerArgs += @("--label", "$($_.Key)=$($_.Value)")
-    }
-    $dockerArgs += @($PSScriptRoot)
-    & docker.exe $dockerArgs | Write-Host -ForegroundColor DarkGray
-    If ($LASTEXITCODE -eq 0) {
-      $target.Tags | ForEach-Object {
-        & docker.exe push "${Repository}:${_}"
+  Function BuildImage {
+    [CmdletBinding()]
+    Param(
+      [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
+      [psobject]$Target
+    )
+    Process {
+      $dockerArgs = @("build")
+      $Target.Tags | ForEach-Object { $dockerArgs += @("--tag", "${Repository}:${_}") }
+      $Target.BuildArgs.GetEnumerator() | ForEach-Object {
+        $dockerArgs += @("--build-arg", "$($_.Key)=$($_.Value)")
+      }
+      $Target.Labels.GetEnumerator() | ForEach-Object {
+        $dockerArgs += @("--label", "$($_.Key)=$($_.Value)")
+      }
+      $dockerArgs += @($PSScriptRoot)
+      Try {
+        & docker.exe $dockerArgs
+        If ($LASTEXITCODE -eq 0) {
+          $Target.Tags | ForEach-Object {
+            & docker.exe push "${Repository}:${_}"
+          }
+        }
+      } Catch {
+        Write-Warning "$($Target.Tags -join ',') failed to build."
       }
     }
   }
+
+  GetBuilds | BuildImage
 }
 End {
   $ErrorActionPreference = $__eap
