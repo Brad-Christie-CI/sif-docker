@@ -1,0 +1,46 @@
+{
+  "2.1.0-windowsservercore-ltsc2019": {
+    "AdditionalTags": [
+      "2.1.0-windowsservercore",
+      "latest"
+    ],
+    "BuildArgs": {
+      "BASE": "mcr.microsoft.com/windows/servercore:ltsc2019",
+      "SIF_VERSION": "2.1.0"
+    },
+    "Labels": {
+      "SIF.Version": "2.1.0"
+    }
+  },
+  "2.1.0-windowsservercore-ltsc2016": {
+    "BuildArgs": {
+      "BASE": "mcr.microsoft.com/windows/servercore:ltsc2016",
+      "SIF_VERSION": "2.1.0"
+    },
+    "Labels": {
+      "SIF.Version": "2.1.0"
+    }
+  },
+
+  "2.0.0-windowsservercore-ltsc2019": {
+    "AdditionalTags": [
+      "2.0.0-windowsservercore"
+    ],
+    "BuildArgs": {
+      "BASE": "mcr.microsoft.com/windows/servercore:ltsc2019",
+      "SIF_VERSION": "2.0.0"
+    },
+    "Labels": {
+      "SIF.Version": "2.0.0"
+    }
+  },
+  "2.0.0-windowsservercore-ltsc2016": {
+    "BuildArgs": {
+      "BASE": "mcr.microsoft.com/windows/servercore:ltsc2016",
+      "SIF_VERSION": "2.0.0"
+    },
+    "Labels": {
+      "SIF.Version": "2.0.0"
+    }
+  }
+}
